@@ -19,10 +19,9 @@ $ docker-init
 Checking for project type...
 We've detected a Go project 🎓
 
-- Dockerfile
-- .dockerignore
-- docker-compose.yaml
-...
+CREATE Dockerfile
+CREATE .dockerignore
+CREATE docker-compose.yaml
 
 ✅ Finished generating files
 
