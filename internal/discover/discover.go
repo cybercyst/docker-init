@@ -4,6 +4,7 @@ import (
 	"docker-init/internal/types"
 	"fmt"
 	"io/fs"
+	"path/filepath"
 )
 
 func getTarget(file string) types.TargetType {
@@ -14,21 +15,26 @@ func getTarget(file string) types.TargetType {
 	return types.None
 }
 
-func ScanFolderForTargets(fsys fs.FS, path string) ([]types.Target, error) {
+func ScanFolderForTargets(fsys fs.FS) ([]types.Target, error) {
 	targets := []types.Target{}
 
-	files, err := fs.ReadDir(fsys, path)
+	files, err := fs.ReadDir(fsys, ".")
 	for _, file := range files {
 		if file.IsDir() {
-			fmt.Printf("%q is a directory, skipping", path)
+			fmt.Printf("%q is a directory, skipping", file.Name())
 			continue
 		}
 
 		targetType := getTarget(file.Name())
+		filePath, err := filepath.Abs(file.Name())
+		if err != nil {
+			return nil, err
+		}
+
 		if targetType != types.None {
 			target := types.Target{
 				TargetType: targetType,
-				Path:       path,
+				Path:       filepath.Dir(filePath),
 			}
 			targets = append(targets, target)
 		}

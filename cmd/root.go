@@ -22,6 +22,8 @@ THE SOFTWARE.
 package cmd
 
 import (
+	"docker-init/internal/discover"
+	"docker-init/internal/template"
 	"fmt"
 	"os"
 
@@ -42,7 +44,21 @@ project and no idea where to start?
 
 Docker init makes it simple!`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("Doing the thing")
+		currentDir, err := os.Getwd()
+		if err != nil {
+			fmt.Printf("unable to get current directory! %v ", err)
+			os.Exit(1)
+		}
+
+		targets, err := discover.ScanFolderForTargets(os.DirFS(currentDir))
+		if err != nil {
+			fmt.Printf("unable to determine targets from current directory! %v ", err)
+			os.Exit(1)
+		}
+
+		for _, target := range targets {
+			template.Generate(target)
+		}
 	},
 }
 

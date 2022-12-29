@@ -7,6 +7,10 @@ type Target struct {
 
 type TargetType uint8
 
+func (t TargetType) ToString() string {
+	return []string{"Go"}[t]
+}
+
 const (
 	Go TargetType = iota
 	None
