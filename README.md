@@ -1,0 +1,33 @@
+# docker-init
+
+You want to get started with containerization immediately.
+You've heard the benefits, but after poking around in multiple blog posts and documents, you're not sure what to add to get going.
+You'd like to quickly start with containerization.
+You'd like to try out container based development environments.
+
+**Make good best guesses to start off new Docker users with the most popular languages / frameworks**
+
+## Usage
+
+```bash
+
+# generate a project with whatever tooling / etc you already have
+
+$ cd my-project
+
+$ docker-init
+Checking for project type...
+We've detected a Go project 🎓
+
+- Dockerfile
+- .dockerignore
+- docker-compose.yaml
+...
+
+✅ Finished generating files
+
+🚀 Run docker compose up to get started! 🚀
+
+$ docker compose up
+
+```
