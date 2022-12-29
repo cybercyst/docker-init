@@ -1,4 +1,4 @@
-module github.com/cybercyst/docker-init
+module docker-init
 
 go 1.19
 

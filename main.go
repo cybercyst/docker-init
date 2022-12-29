@@ -21,7 +21,7 @@ THE SOFTWARE.
 */
 package main
 
-import "github.com/cybercyst/docker-init/cmd"
+import "docker-init/cmd"
 
 func main() {
 	cmd.Execute()
