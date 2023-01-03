@@ -9,15 +9,23 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/bclicn/color"
+	"github.com/flosch/pongo2/v6"
 	"github.com/qri-io/jsonschema"
 	"sigs.k8s.io/yaml"
 )
 
-func validateInput(schemaPath string, userInput interface{}) error {
+func validateInput(schemaPath string, userInput map[string]interface{}) error {
 	ctx := context.Background()
 
 	schemaBytes, err := os.ReadFile(schemaPath)
+	if err != nil {
+		return err
+	}
 	schemaJson, err := yaml.YAMLToJSON(schemaBytes)
+	if err != nil {
+		return err
+	}
 
 	rs := &jsonschema.Schema{}
 	err = json.Unmarshal(schemaJson, rs)
@@ -25,8 +33,11 @@ func validateInput(schemaPath string, userInput interface{}) error {
 		return err
 	}
 
-	var templateInput = []byte(`{ "binary": "docker-init" }`)
-	validationErrors, err := rs.ValidateBytes(ctx, templateInput)
+	userInputBytes, err := json.Marshal(userInput)
+	if err != nil {
+		return err
+	}
+	validationErrors, err := rs.ValidateBytes(ctx, userInputBytes)
 	if err != nil {
 		return err
 	}
@@ -36,21 +47,20 @@ func validateInput(schemaPath string, userInput interface{}) error {
 		for _, validationError := range validationErrors {
 			fmt.Println(validationError.Error())
 		}
-		return fmt.Errorf("the provided user input did not pass this template's schema\n")
+		return fmt.Errorf("the provided user input did not pass this template's schema")
 	}
 
 	return nil
 }
 
 func Generate(target types.Target) error {
-
 	templateDir, err := getTemplateDir(target.TargetType)
 	if err != nil {
 		return err
 	}
 
 	schemaPath := filepath.Join(templateDir, "schema.yaml")
-	err := validateInput(schemaPath, input)
+	err = validateInput(schemaPath, target.Input)
 	if err != nil {
 		return err
 	}
@@ -62,9 +72,31 @@ func Generate(target types.Target) error {
 			return nil
 		}
 
-		fmt.Println(path)
+		if path == "." {
+			// ignore root
+			return nil
+		}
+
+		templateFilePath := filepath.Join(templateFilesDir, path)
+		template := pongo2.Must(pongo2.FromFile(templateFilePath))
+
+		out, err := template.Execute(target.Input)
+		if err != nil {
+			return err
+		}
+
+		outputPath := filepath.Join(target.Path, path)
+		err = os.WriteFile(outputPath, []byte(out), 0644)
+		if err != nil {
+			return err
+		}
+		fmt.Println(color.Green("CREATE"), path)
+
 		return nil
 	})
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
@@ -75,6 +107,6 @@ func getTemplateDir(targetType types.TargetType) (string, error) {
 		return "internal/template/gomod", nil
 	}
 
-	err := fmt.Errorf("no generator found for target type %s\n", targetType.ToString())
+	err := fmt.Errorf("no generator found for target type %s", targetType.ToString())
 	return "", err
 }

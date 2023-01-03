@@ -1,3 +1,12 @@
+# Add files here to avoid adding them to images when using ADD or COPY
+# See https://docs.docker.com/engine/reference/builder/#dockerignore-file
+
+# For example:
+# # comment
+# */temp*
+# */*/temp*
+# temp?
+
 {%- for file in ignore_files %}
 {{ file }}
 {% endfor %}

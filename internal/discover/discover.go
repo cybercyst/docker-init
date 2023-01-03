@@ -2,16 +2,43 @@ package discover
 
 import (
 	"docker-init/internal/types"
+	"fmt"
 	"io/fs"
+	"os"
 	"path/filepath"
+	"strings"
 )
 
-func getTarget(file string) types.TargetType {
+func getTargetType(file string) types.TargetType {
 	switch file {
 	case "go.mod":
 		return types.Go
 	}
 	return types.None
+}
+
+func getInput(targetType types.TargetType, targetPath string) (map[string]interface{}, error) {
+	input := map[string]interface{}{}
+
+	switch targetType {
+	case types.Go:
+		gomodBytes, err := os.ReadFile(targetPath)
+		if err != nil {
+			return nil, err
+		}
+
+		for _, line := range strings.Split(string(gomodBytes), "\n") {
+			if strings.HasPrefix(line, "module") {
+				module := strings.Split(line, " ")[1]
+				input["binary"] = module
+			}
+		}
+
+		return input, nil
+	}
+
+	err := fmt.Errorf("no input generator found for target type %v", targetType.ToString())
+	return nil, err
 }
 
 func ScanFolderForTargets(fsys fs.FS) ([]types.Target, error) {
@@ -20,23 +47,28 @@ func ScanFolderForTargets(fsys fs.FS) ([]types.Target, error) {
 	files, err := fs.ReadDir(fsys, ".")
 	for _, file := range files {
 		if file.IsDir() {
-			// fmt.Printf("%q is a directory, skipping\n", file.Name())
 			continue
 		}
 
-		targetType := getTarget(file.Name())
-		filePath, err := filepath.Abs(file.Name())
+		targetType := getTargetType(file.Name())
+		if targetType == types.None {
+			continue
+		}
+
+		targetPath, err := filepath.Abs(file.Name())
 		if err != nil {
 			return nil, err
 		}
-
-		if targetType != types.None {
-			target := types.Target{
-				TargetType: targetType,
-				Path:       filepath.Dir(filePath),
-			}
-			targets = append(targets, target)
+		input, err := getInput(targetType, targetPath)
+		if err != nil {
+			return nil, err
 		}
+		target := types.Target{
+			TargetType: targetType,
+			Path:       filepath.Dir(targetPath),
+			Input:      input,
+		}
+		targets = append(targets, target)
 	}
 
 	return targets, err

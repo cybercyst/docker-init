@@ -9,7 +9,10 @@ require (
 	sigs.k8s.io/yaml v1.3.0
 )
 
+require github.com/bclicn/color v0.0.0-20180711051946-108f2023dc84 // indirect
+
 require (
+	github.com/flosch/pongo2/v6 v6.0.0
 	github.com/fsnotify/fsnotify v1.6.0 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/inconshreveable/mousetrap v1.0.1 // indirect

@@ -37,4 +37,3 @@ COPY --from=builder /app/{{ binary }} .
 {%- if port %}EXPOSE {{ port }}{% endif %}
 
 ENTRYPOINT [ "/{{ binary }}" ]
-
