@@ -1,24 +1,3 @@
-/*
-Copyright © 2022 Forrest Loomis <cybercyst@gmail.com>
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-*/
 package cmd
 
 import (
@@ -27,6 +6,8 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/bclicn/color"
+	"github.com/enescakir/emoji"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -56,9 +37,26 @@ Docker init makes it simple!`,
 			os.Exit(1)
 		}
 
-		for _, target := range targets {
-			template.Generate(target)
+		if len(targets) == 0 {
+			fmt.Println(emoji.SeeNoEvilMonkey, "Well this is embarassing. We were unable to initialize Docker for this directory")
+			os.Exit(1)
 		}
+
+		for _, target := range targets {
+			fmt.Println()
+			fmt.Println(emoji.PartyPopper, color.Green("SUCCESS"), "We found a", color.BBlue(target.TargetType.ToString()), "project!", emoji.PartyPopper)
+			fmt.Println()
+			err := template.Generate(target)
+			if err != nil {
+				fmt.Printf("error while generating files: %v", err)
+				os.Exit(1)
+			}
+			fmt.Println()
+			fmt.Println(emoji.CheckBoxWithCheck, " Finished setting up Docker for your", color.BBlue(target.TargetType.ToString()), "project.")
+		}
+
+		fmt.Println()
+		fmt.Println(emoji.Rocket, "Run", color.BBlue("docker compose up"), "to get started!", emoji.Rocket)
 	},
 }
 

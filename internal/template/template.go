@@ -1,20 +1,99 @@
 package template
 
 import (
-	"docker-init/internal/template/generators"
+	"context"
 	"docker-init/internal/types"
+	"encoding/json"
 	"fmt"
+	"io/fs"
 	"os"
 	"path/filepath"
+
+	"github.com/bclicn/color"
+	"github.com/flosch/pongo2/v6"
+	"github.com/qri-io/jsonschema"
+	"sigs.k8s.io/yaml"
 )
 
-func Generate(target types.Target) error {
-	body, err := generateContent(target)
+func validateInput(schemaPath string, userInput map[string]interface{}) error {
+	ctx := context.Background()
+
+	schemaBytes, err := os.ReadFile(schemaPath)
+	if err != nil {
+		return err
+	}
+	schemaJson, err := yaml.YAMLToJSON(schemaBytes)
 	if err != nil {
 		return err
 	}
 
-	os.WriteFile(filepath.Join(target.Path, "Dockerfile"), []byte(body), 0666)
+	rs := &jsonschema.Schema{}
+	err = json.Unmarshal(schemaJson, rs)
+	if err != nil {
+		return err
+	}
+
+	userInputBytes, err := json.Marshal(userInput)
+	if err != nil {
+		return err
+	}
+	validationErrors, err := rs.ValidateBytes(ctx, userInputBytes)
+	if err != nil {
+		return err
+	}
+
+	if len(validationErrors) > 0 {
+		fmt.Println("The following validation errors were discovered while attempting to generate this template:")
+		for _, validationError := range validationErrors {
+			fmt.Println(validationError.Error())
+		}
+		return fmt.Errorf("the provided user input did not pass this template's schema")
+	}
+
+	return nil
+}
+
+func Generate(target types.Target) error {
+	templateDir, err := getTemplateDir(target.TargetType)
+	if err != nil {
+		return err
+	}
+
+	schemaPath := filepath.Join(templateDir, "schema.yaml")
+	err = validateInput(schemaPath, target.Input)
+	if err != nil {
+		return err
+	}
+
+	templateFilesDir := filepath.Join(templateDir, "template")
+	err = fs.WalkDir(os.DirFS(templateFilesDir), ".", func(path string, d fs.DirEntry, err error) error {
+		if err != nil {
+			// noop errors
+			return nil
+		}
+
+		if path == "." {
+			// ignore root
+			return nil
+		}
+
+		templateFilePath := filepath.Join(templateFilesDir, path)
+		template := pongo2.Must(pongo2.FromFile(templateFilePath))
+
+		out, err := template.Execute(target.Input)
+		if err != nil {
+			return err
+		}
+
+		outputPath := filepath.Join(target.Path, path)
+		err = os.WriteFile(outputPath, []byte(out), 0644)
+		if err != nil {
+			return err
+		}
+		fmt.Println(color.Green("CREATE"), path)
+
+		return nil
+	})
 	if err != nil {
 		return err
 	}
@@ -22,11 +101,20 @@ func Generate(target types.Target) error {
 	return nil
 }
 
-func generateContent(target types.Target) (string, error) {
-	switch target.TargetType {
+func getTemplateDir(targetType types.TargetType) (string, error) {
+	homeDir, err := os.UserHomeDir()
+	if err != nil {
+		return "", err
+	}
+	rootTemplateDir := filepath.Join(homeDir, ".docker-init", "templates")
+
+	switch targetType {
 	case types.Go:
-		return generators.GenerateGo(nil)
+		return filepath.Join(rootTemplateDir, "gomod"), nil
+	case types.Angular:
+		return filepath.Join(rootTemplateDir, "angular"), nil
 	}
 
-	return "", fmt.Errorf("no generator found for target type %s at path %s", target.TargetType.ToString(), target.Path)
+	err = fmt.Errorf("no generator found for target type %s", targetType.ToString())
+	return "", err
 }

@@ -1,0 +1,11 @@
+title: Angular
+type: object
+properties:
+  ignore_files:
+    type: array
+    items:
+      type: string
+  project_name:
+    type: string
+required:
+  - project_name

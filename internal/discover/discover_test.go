@@ -2,23 +2,29 @@ package discover
 
 import (
 	"docker-init/internal/types"
+	"os"
 	"testing"
 	"testing/fstest"
 )
 
 func TestScanFolderForTargetsGo(t *testing.T) {
 	m := fstest.MapFS{
-		"go_project/go.mod": {},
+		"go.mod": {},
 	}
 
-	got, err := ScanFolderForTargets(m, "go_project")
+	got, err := ScanFolderForTargets(m)
 	if err != nil {
 		t.Fatal("expected no error when detecting target of type Go")
 	}
 
+	currDir, err := os.Getwd()
+	if err != nil {
+		t.Fatal("expected no error when getting current directory")
+	}
+
 	want := types.Target{
 		TargetType: types.Go,
-		Path:       "go_project",
+		Path:       currDir,
 	}
 
 	if len(got) < 1 || got[0] != want {
@@ -26,26 +32,13 @@ func TestScanFolderForTargetsGo(t *testing.T) {
 	}
 }
 
-func TestScanFolderForTargetsFolderDoesntExist(t *testing.T) {
-	m := fstest.MapFS{}
-
-	got, err := ScanFolderForTargets(m, "go_project")
-	if len(got) != 0 {
-		t.Fatal("expected no targets when directory doesn't exist")
-	}
-
-	if err == nil {
-		t.Fatal("expected error if directory doesn't exist")
-	}
-}
-
 func TestScanFolderNoTargetFound(t *testing.T) {
 	m := fstest.MapFS{
-		"rando_directory/a.txt": {Data: []byte("My amazing text file")},
-		"rando_directory/b.txt": {Data: []byte("Another life-changing file")},
+		"a.txt": {Data: []byte("My amazing text file")},
+		"b.txt": {Data: []byte("Another life-changing file")},
 	}
 
-	got, err := ScanFolderForTargets(m, "rando_directory")
+	got, err := ScanFolderForTargets(m)
 	if err != nil {
 		t.Fatal("expected no error when scanning folder with no targets")
 	}
