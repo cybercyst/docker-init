@@ -32,6 +32,11 @@ func getInput(targetType types.TargetType, targetPath string) (map[string]interf
 				module := strings.Split(line, " ")[1]
 				input["binary"] = module
 			}
+
+			// HACK to setup for gin projects
+			if strings.Contains(line, "gin-gonic/gin") {
+				input["port"] = 8080
+			}
 		}
 
 		return input, nil
