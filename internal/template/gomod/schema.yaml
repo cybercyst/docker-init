@@ -1,0 +1,14 @@
+title: Go (go.mod)
+type: object
+properties:
+  ignore_files:
+    type: array
+    items:
+      type: string
+  binary:
+    type: string
+  port:
+    type: integer
+required:
+  - binary
+

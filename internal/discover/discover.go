@@ -2,7 +2,6 @@ package discover
 
 import (
 	"docker-init/internal/types"
-	"fmt"
 	"io/fs"
 	"path/filepath"
 )
@@ -21,7 +20,7 @@ func ScanFolderForTargets(fsys fs.FS) ([]types.Target, error) {
 	files, err := fs.ReadDir(fsys, ".")
 	for _, file := range files {
 		if file.IsDir() {
-			fmt.Printf("%q is a directory, skipping", file.Name())
+			// fmt.Printf("%q is a directory, skipping\n", file.Name())
 			continue
 		}
 

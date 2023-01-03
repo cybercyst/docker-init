@@ -1,10 +1,3 @@
-package generators
-
-import (
-	"github.com/noirbizarre/gonja"
-)
-
-var templateContent = `
 # syntax=docker/dockerfile:1
 
 ARG IMAGE=golang:1.19-alpine
@@ -44,18 +37,4 @@ COPY --from=builder /app/{{ binary }} .
 {%- if port %}EXPOSE {{ port }}{% endif %}
 
 ENTRYPOINT [ "/{{ binary }}" ]
-`
 
-func GenerateGo(context gonja.Context) (string, error) {
-	tmpl, err := gonja.FromString(templateContent)
-	if err != nil {
-		return "", err
-	}
-
-	output, err := tmpl.Execute(context)
-	if err != nil {
-		return "", err
-	}
-
-	return output, nil
-}

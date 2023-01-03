@@ -11,7 +11,7 @@ func TestScanFolderForTargetsGo(t *testing.T) {
 		"go_project/go.mod": {},
 	}
 
-	got, err := ScanFolderForTargets(m, "go_project")
+	got, err := ScanFolderForTargets(m)
 	if err != nil {
 		t.Fatal("expected no error when detecting target of type Go")
 	}
@@ -29,7 +29,7 @@ func TestScanFolderForTargetsGo(t *testing.T) {
 func TestScanFolderForTargetsFolderDoesntExist(t *testing.T) {
 	m := fstest.MapFS{}
 
-	got, err := ScanFolderForTargets(m, "go_project")
+	got, err := ScanFolderForTargets(m)
 	if len(got) != 0 {
 		t.Fatal("expected no targets when directory doesn't exist")
 	}
@@ -45,7 +45,7 @@ func TestScanFolderNoTargetFound(t *testing.T) {
 		"rando_directory/b.txt": {Data: []byte("Another life-changing file")},
 	}
 
-	got, err := ScanFolderForTargets(m, "rando_directory")
+	got, err := ScanFolderForTargets(m)
 	if err != nil {
 		t.Fatal("expected no error when scanning folder with no targets")
 	}
