@@ -33,7 +33,7 @@ RUN CGO_ENABLED=0 GOOS=linux go build -o {{ binary }}
 FROM scratch AS production
 
 COPY --from=builder /app/{{ binary }} .
-
-{%- if port %}EXPOSE {{ port }}{% endif %}
-
+{% if port %}
+EXPOSE {{ port }}
+{% endif %}
 ENTRYPOINT [ "/{{ binary }}" ]
