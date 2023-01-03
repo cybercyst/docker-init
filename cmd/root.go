@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/bclicn/color"
+	"github.com/enescakir/emoji"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -35,13 +37,26 @@ Docker init makes it simple!`,
 			os.Exit(1)
 		}
 
+		if len(targets) == 0 {
+			fmt.Println(emoji.SeeNoEvilMonkey, "Well this is embarassing. We were unable to initialize Docker for this directory")
+			os.Exit(1)
+		}
+
 		for _, target := range targets {
+			fmt.Println()
+			fmt.Println(emoji.PartyPopper, color.Green("SUCCESS"), "We found a", color.Blue(target.TargetType.ToString()), "project!", emoji.PartyPopper)
+			fmt.Println()
 			err := template.Generate(target)
 			if err != nil {
 				fmt.Printf("error while generating files: %v", err)
 				os.Exit(1)
 			}
+			fmt.Println()
+			fmt.Println(emoji.CheckBoxWithCheck, " Finished setting up Docker for your", color.Blue(target.TargetType.ToString()), "project.")
 		}
+
+		fmt.Println()
+		fmt.Println(emoji.Rocket, "Run", color.BBlue("docker compose up"), "to get started!", emoji.Rocket)
 	},
 }
 

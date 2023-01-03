@@ -3,13 +3,14 @@ module docker-init
 go 1.19
 
 require (
+	github.com/bclicn/color v0.0.0-20180711051946-108f2023dc84
 	github.com/qri-io/jsonschema v0.2.1
 	github.com/spf13/cobra v1.6.1
 	github.com/spf13/viper v1.14.0
 	sigs.k8s.io/yaml v1.3.0
 )
 
-require github.com/bclicn/color v0.0.0-20180711051946-108f2023dc84 // indirect
+require github.com/enescakir/emoji v1.0.0
 
 require (
 	github.com/flosch/pongo2/v6 v6.0.0

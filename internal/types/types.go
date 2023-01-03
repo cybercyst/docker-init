@@ -9,7 +9,7 @@ type Target struct {
 type TargetType uint8
 
 func (t TargetType) ToString() string {
-	return []string{"Go"}[t]
+	return []string{"Golang"}[t]
 }
 
 const (
