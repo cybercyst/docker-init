@@ -44,7 +44,7 @@ Docker init makes it simple!`,
 
 		for _, target := range targets {
 			fmt.Println()
-			fmt.Println(emoji.PartyPopper, color.Green("SUCCESS"), "We found a", color.Blue(target.TargetType.ToString()), "project!", emoji.PartyPopper)
+			fmt.Println(emoji.PartyPopper, color.Green("SUCCESS"), "We found a", color.BBlue(target.TargetType.ToString()), "project!", emoji.PartyPopper)
 			fmt.Println()
 			err := template.Generate(target)
 			if err != nil {
@@ -52,7 +52,7 @@ Docker init makes it simple!`,
 				os.Exit(1)
 			}
 			fmt.Println()
-			fmt.Println(emoji.CheckBoxWithCheck, " Finished setting up Docker for your", color.Blue(target.TargetType.ToString()), "project.")
+			fmt.Println(emoji.CheckBoxWithCheck, " Finished setting up Docker for your", color.BBlue(target.TargetType.ToString()), "project.")
 		}
 
 		fmt.Println()
