@@ -1,7 +1,7 @@
 package discover
 
 import (
-	"docker-init/internal/types"
+	"docker-new/internal/types"
 	"encoding/json"
 	"fmt"
 	"io/fs"

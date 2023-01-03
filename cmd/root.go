@@ -1,8 +1,8 @@
 package cmd
 
 import (
-	"docker-init/internal/discover"
-	"docker-init/internal/template"
+	"docker-new/internal/discover"
+	"docker-new/internal/template"
 	"fmt"
 	"os"
 
@@ -15,7 +15,7 @@ import (
 var cfgFile string
 
 var rootCmd = &cobra.Command{
-	Use:   "docker-init",
+	Use:   "docker-new",
 	Short: "Use Docker with your existing projects",
 	Long: `Do you want to have all the great benefits of using Docker with an existing
 project and no idea where to start?
@@ -23,7 +23,7 @@ project and no idea where to start?
 - Set up a Docker dev environment for this project
 - Bootstrap and configure your production-facing build artifact
 
-Docker init makes it simple!`,
+Docker new makes it simple!`,
 	Run: func(cmd *cobra.Command, args []string) {
 		currentDir, err := os.Getwd()
 		if err != nil {
@@ -74,7 +74,7 @@ func init() {
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
 
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.docker-init.yaml)")
+	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.docker-new.yaml)")
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
@@ -91,10 +91,10 @@ func initConfig() {
 		home, err := os.UserHomeDir()
 		cobra.CheckErr(err)
 
-		// Search config in home directory with name ".docker-init" (without extension).
+		// Search config in home directory with name ".docker-new" (without extension).
 		viper.AddConfigPath(home)
 		viper.SetConfigType("yaml")
-		viper.SetConfigName(".docker-init")
+		viper.SetConfigName(".docker-new")
 	}
 
 	viper.AutomaticEnv() // read in environment variables that match

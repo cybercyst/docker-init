@@ -1,4 +1,4 @@
-module docker-init
+module docker-new
 
 go 1.19
 

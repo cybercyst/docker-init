@@ -1,4 +1,4 @@
-# docker-init
+# docker-new
 
 You want to get started with containerization immediately.
 You've heard the benefits, but after poking around in multiple blog posts and documents, you're not sure what to add to get going.
@@ -15,7 +15,7 @@ You'd like to try out container based development environments.
 
 $ cd my-project
 
-$ docker-init
+$ docker-new
 Checking for project type...
 We've detected a Go project 🎓
 

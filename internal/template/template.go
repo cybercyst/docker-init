@@ -2,7 +2,7 @@ package template
 
 import (
 	"context"
-	"docker-init/internal/types"
+	"docker-new/internal/types"
 	"encoding/json"
 	"fmt"
 	"io/fs"
@@ -106,7 +106,7 @@ func getTemplateDir(targetType types.TargetType) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	rootTemplateDir := filepath.Join(homeDir, ".docker-init", "templates")
+	rootTemplateDir := filepath.Join(homeDir, ".docker-", "templates")
 
 	switch targetType {
 	case types.Go:

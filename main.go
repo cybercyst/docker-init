@@ -1,6 +1,6 @@
 package main
 
-import "docker-init/cmd"
+import "docker-new/cmd"
 
 func main() {
 	cmd.Execute()

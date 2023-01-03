@@ -1,7 +1,7 @@
 package template
 
 import (
-	"docker-init/internal/types"
+	"docker-new/internal/types"
 	"os"
 	"testing"
 )
