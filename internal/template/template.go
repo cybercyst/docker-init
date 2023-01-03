@@ -106,7 +106,7 @@ func getTemplateDir(targetType types.TargetType) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	rootTemplateDir := filepath.Join(homeDir, ".docker-", "templates")
+	rootTemplateDir := filepath.Join(homeDir, ".docker-new", "templates")
 
 	switch targetType {
 	case types.Go:
