@@ -111,6 +111,8 @@ func getTemplateDir(targetType types.TargetType) (string, error) {
 	switch targetType {
 	case types.Go:
 		return filepath.Join(rootTemplateDir, "gomod"), nil
+	case types.Angular:
+		return filepath.Join(rootTemplateDir, "angular"), nil
 	}
 
 	err = fmt.Errorf("no generator found for target type %s", targetType.ToString())
