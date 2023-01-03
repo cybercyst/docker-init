@@ -102,11 +102,17 @@ func Generate(target types.Target) error {
 }
 
 func getTemplateDir(targetType types.TargetType) (string, error) {
+	homeDir, err := os.UserHomeDir()
+	if err != nil {
+		return "", err
+	}
+	rootTemplateDir := filepath.Join(homeDir, ".docker-init", "templates")
+
 	switch targetType {
 	case types.Go:
-		return "internal/template/gomod", nil
+		return filepath.Join(rootTemplateDir, "gomod"), nil
 	}
 
-	err := fmt.Errorf("no generator found for target type %s", targetType.ToString())
+	err = fmt.Errorf("no generator found for target type %s", targetType.ToString())
 	return "", err
 }
