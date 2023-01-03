@@ -72,8 +72,7 @@ func Generate(target types.Target) error {
 			return nil
 		}
 
-		if path == "." {
-			// ignore root
+		if d.IsDir() {
 			return nil
 		}
 
@@ -86,6 +85,11 @@ func Generate(target types.Target) error {
 		}
 
 		outputPath := filepath.Join(target.Path, path)
+		err = os.MkdirAll(filepath.Dir(outputPath), 0755)
+		if err != nil {
+			return err
+		}
+
 		err = os.WriteFile(outputPath, []byte(out), 0644)
 		if err != nil {
 			return err
