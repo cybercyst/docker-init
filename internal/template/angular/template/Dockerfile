@@ -14,8 +14,11 @@ WORKDIR /app
 # that make up your project
 COPY . .
 
-RUN npm ci && \
-    npm start
+RUN npm ci
+
+EXPOSE 4200
+
+CMD ["npm", "start"]
 
 FROM $IMAGE AS builder
 
@@ -33,5 +36,7 @@ RUN npm ci && \
     npm run build
 
 FROM nginx:1.23 AS production
+
+EXPOSE 80
 
 COPY --from=builder /app/dist/{{ project_name }} /usr/share/nginx/html/
