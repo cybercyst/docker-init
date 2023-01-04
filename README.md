@@ -30,3 +30,7 @@ CREATE docker-compose.yaml
 $ docker compose up
 
 ```
+
+## Demo
+
+[![asciicast](https://asciinema.org/a/u5TJBtgVipKgvCRvgTfHDoW5U.svg)](https://asciinema.org/a/u5TJBtgVipKgvCRvgTfHDoW5U)
