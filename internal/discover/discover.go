@@ -10,6 +10,21 @@ import (
 	"strings"
 )
 
+func getPackageJsonKey(targetPath string, key string) (interface{}, error) {
+	packageJsonBytes, err := os.ReadFile(filepath.Join(targetPath, "package.json"))
+	if err != nil {
+		return nil, err
+	}
+
+	packageJson := make(map[string]interface{})
+	err = json.Unmarshal(packageJsonBytes, &packageJson)
+	if err != nil {
+		return nil, err
+	}
+
+	return packageJson[key], nil
+}
+
 func getTargetType(file string) types.TargetType {
 	switch file {
 	case "go.mod":
@@ -18,14 +33,23 @@ func getTargetType(file string) types.TargetType {
 		return types.Angular
 	case "pyproject.toml":
 		return types.Python
+	case "package.json":
+		packageJsonBytes, err := os.ReadFile(file)
+		if err != nil {
+			panic(err)
+		}
+		if strings.Contains(string(packageJsonBytes), "react") {
+			return types.React
+		}
 	}
 	return types.None
 }
 
 func getInput(targetType types.TargetType, targetPath string) (map[string]interface{}, error) {
+	input := make(map[string]interface{})
+
 	switch targetType {
 	case types.Go:
-		input := make(map[string]interface{})
 		gomodBytes, err := os.ReadFile(filepath.Join(targetPath, "go.mod"))
 		if err != nil {
 			return nil, err
@@ -45,26 +69,23 @@ func getInput(targetType types.TargetType, targetPath string) (map[string]interf
 
 		return input, nil
 	case types.Angular:
-		input := make(map[string]interface{})
-
-		packageJsonBytes, err := os.ReadFile(filepath.Join(targetPath, "package.json"))
+		projectName, err := getPackageJsonKey(targetPath, "name")
 		if err != nil {
 			return nil, err
 		}
+		input["project_name"] = projectName
 
-		packageJson := make(map[string]interface{})
-		err = json.Unmarshal(packageJsonBytes, &packageJson)
+		return input, nil
+	case types.React:
+		projectName, err := getPackageJsonKey(targetPath, "name")
 		if err != nil {
 			return nil, err
 		}
-
-		input["project_name"] = packageJson["name"]
+		input["project_name"] = projectName
 
 		return input, nil
 	case types.Python:
-		input := make(map[string]interface{})
-
-		// TODO: Actually deetect these values and handle more Python project types
+		// TODO: Actually detect these values and handle more Python project types
 		input["app"] = "main:app"
 		input["port"] = 8000
 

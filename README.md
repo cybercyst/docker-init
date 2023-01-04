@@ -38,6 +38,7 @@ Currently supports
 - Golang (using go.mod)
 - Python (using pyproject.toml)
 - Angular
+- React
 
 ## Demo
 

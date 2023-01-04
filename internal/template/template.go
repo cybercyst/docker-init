@@ -120,6 +120,8 @@ func getTemplateDir(targetType types.TargetType) (string, error) {
 		templateDir = "angular"
 	case types.Python:
 		templateDir = "pyproject"
+	case types.React:
+		templateDir = "react"
 	}
 
 	if templateDir == "" {
