@@ -31,6 +31,14 @@ $ docker compose up
 
 ```
 
+## Support
+
+Currently supports
+
+- Golang (using go.mod)
+- Python (using pyproject.toml)
+- Angular
+
 ## Demo
 
 [![asciicast](https://asciinema.org/a/u5TJBtgVipKgvCRvgTfHDoW5U.svg)](https://asciinema.org/a/u5TJBtgVipKgvCRvgTfHDoW5U)
