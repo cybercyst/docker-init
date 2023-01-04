@@ -111,14 +111,21 @@ func getTemplateDir(targetType types.TargetType) (string, error) {
 		return "", err
 	}
 	rootTemplateDir := filepath.Join(homeDir, ".docker-new", "templates")
+	templateDir := ""
 
 	switch targetType {
 	case types.Go:
-		return filepath.Join(rootTemplateDir, "gomod"), nil
+		templateDir = "gomod"
 	case types.Angular:
-		return filepath.Join(rootTemplateDir, "angular"), nil
+		templateDir = "angular"
+	case types.Python:
+		templateDir = "pyproject"
 	}
 
-	err = fmt.Errorf("no generator found for target type %s", targetType.ToString())
-	return "", err
+	if templateDir == "" {
+		err = fmt.Errorf("no generator found for target type %s", targetType.ToString())
+		return "", err
+	}
+
+	return filepath.Join(rootTemplateDir, templateDir), nil
 }

@@ -9,11 +9,12 @@ type Target struct {
 type TargetType uint8
 
 func (t TargetType) ToString() string {
-	return []string{"Golang", "Angular", "None"}[t]
+	return []string{"Golang", "Angular", "FastAPI", "None"}[t]
 }
 
 const (
 	Go TargetType = iota
 	Angular
+	Python
 	None
 )

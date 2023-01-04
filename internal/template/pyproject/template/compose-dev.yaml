@@ -1,0 +1,7 @@
+services:
+    dev-backend:
+        build:
+            context: .
+            target: development
+        ports:
+            - 8000:8000

@@ -16,6 +16,8 @@ func getTargetType(file string) types.TargetType {
 		return types.Go
 	case "angular.json":
 		return types.Angular
+	case "pyproject.toml":
+		return types.Python
 	}
 	return types.None
 }
@@ -23,7 +25,7 @@ func getTargetType(file string) types.TargetType {
 func getInput(targetType types.TargetType, targetPath string) (map[string]interface{}, error) {
 	switch targetType {
 	case types.Go:
-		input := map[string]interface{}{}
+		input := make(map[string]interface{})
 		gomodBytes, err := os.ReadFile(filepath.Join(targetPath, "go.mod"))
 		if err != nil {
 			return nil, err
@@ -43,7 +45,7 @@ func getInput(targetType types.TargetType, targetPath string) (map[string]interf
 
 		return input, nil
 	case types.Angular:
-		input := map[string]interface{}{}
+		input := make(map[string]interface{})
 
 		packageJsonBytes, err := os.ReadFile(filepath.Join(targetPath, "package.json"))
 		if err != nil {
@@ -57,6 +59,14 @@ func getInput(targetType types.TargetType, targetPath string) (map[string]interf
 		}
 
 		input["project_name"] = packageJson["name"]
+
+		return input, nil
+	case types.Python:
+		input := make(map[string]interface{})
+
+		// TODO: Actually deetect these values and handle more Python project types
+		input["app"] = "main:app"
+		input["port"] = 8000
 
 		return input, nil
 	}
