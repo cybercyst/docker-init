@@ -1,8 +1,8 @@
 # docker new
 
-I am a developer who wants to use Docker.
+I am a developer who wants to use Docker
 
-I've heard great things about it.
+I've heard great things about Containerization
 
 **How do I get started?**
 
