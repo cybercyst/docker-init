@@ -45,7 +45,7 @@ func getTargetType(file string) types.TargetType {
 	return types.None
 }
 
-func getInput(targetType types.TargetType, targetPath string) (map[string]interface{}, error) {
+func getInput(targetType types.TargetType, targetPath string) (*map[string]interface{}, error) {
 	input := make(map[string]interface{})
 
 	switch targetType {
@@ -67,7 +67,7 @@ func getInput(targetType types.TargetType, targetPath string) (map[string]interf
 			}
 		}
 
-		return input, nil
+		return &input, nil
 	case types.Angular:
 		projectName, err := getPackageJsonKey(targetPath, "name")
 		if err != nil {
@@ -75,7 +75,7 @@ func getInput(targetType types.TargetType, targetPath string) (map[string]interf
 		}
 		input["project_name"] = projectName
 
-		return input, nil
+		return &input, nil
 	case types.React:
 		projectName, err := getPackageJsonKey(targetPath, "name")
 		if err != nil {
@@ -83,13 +83,13 @@ func getInput(targetType types.TargetType, targetPath string) (map[string]interf
 		}
 		input["project_name"] = projectName
 
-		return input, nil
+		return &input, nil
 	case types.Python:
 		// TODO: Actually detect these values and handle more Python project types
 		input["app"] = "main:app"
 		input["port"] = 8000
 
-		return input, nil
+		return &input, nil
 	}
 
 	err := fmt.Errorf("no input generator found for target type %v", targetType.ToString())

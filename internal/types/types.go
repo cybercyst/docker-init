@@ -3,7 +3,7 @@ package types
 type Target struct {
 	TargetType TargetType
 	Path       string
-	Input      map[string]interface{}
+	Input      *map[string]interface{}
 }
 
 type TargetType uint8

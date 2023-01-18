@@ -13,13 +13,12 @@ func TestGenerateGo(t *testing.T) {
 	target := types.Target{
 		TargetType: types.Go,
 		Path:       tmpDir,
+		Input: &map[string]interface{}{
+			"binary": "go-api",
+		},
 	}
 
-	input := map[string]interface{}{
-		"binary": "go-api",
-	}
-
-	err := Generate(target, input)
+	err := Generate(target)
 	if err != nil {
 		t.Fatalf("no error expected when initializing a Go project: %v", err)
 	}
