@@ -1,0 +1,23 @@
+version: 3
+
+tasks:
+  build:
+    # deps:
+    #   - test
+    cmds:
+      - go build -v .
+
+  test:
+    cmds:
+      - go test -v -cover ./...
+
+  install:
+    deps:
+      - build
+    cmds:
+      - mkdir -p $HOME/.docker/cli-plugins
+      - ln -sf $PWD/docker-new $HOME/.docker/cli-plugins
+
+  clean:
+    cmds:
+      - go clean

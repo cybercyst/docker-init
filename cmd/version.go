@@ -32,5 +32,5 @@ Created-at: %s`,
 }
 
 func init() {
-	rootCmd.AddCommand(versionCmd)
+	RootCmd.AddCommand(versionCmd)
 }

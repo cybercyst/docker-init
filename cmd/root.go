@@ -14,8 +14,8 @@ import (
 
 var cfgFile string
 
-var rootCmd = &cobra.Command{
-	Use:   "docker-new",
+var RootCmd = &cobra.Command{
+	Use:   "new",
 	Short: "Use Docker with your existing projects",
 	Long: `Do you want to have all the great benefits of using Docker with an existing
 project and no idea where to start?
@@ -61,7 +61,7 @@ Docker new makes it simple!`,
 }
 
 func Execute() {
-	err := rootCmd.Execute()
+	err := RootCmd.Execute()
 	if err != nil {
 		os.Exit(1)
 	}
@@ -74,11 +74,11 @@ func init() {
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
 
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.docker-new.yaml)")
+	RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.docker-new.yaml)")
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
-	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	RootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
 // initConfig reads in config file and ENV variables if set.
