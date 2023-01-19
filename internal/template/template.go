@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/bclicn/color"
 	"github.com/cybercyst/go-cookiecutter/pkg/cookiecutter"
 )
 
@@ -15,9 +16,13 @@ func Generate(target types.Target) error {
 		return err
 	}
 
-	_, err = cookiecutter.Generate(templateDir, target.Input, target.Path)
+	metadata, err := cookiecutter.Generate(templateDir, target.Input, target.Path)
 	if err != nil {
 		return err
+	}
+
+	for _, file := range *metadata.CreatedFiles {
+		fmt.Println(color.Green("CREATE"), file)
 	}
 
 	return nil

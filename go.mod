@@ -37,12 +37,12 @@ require (
 	golang.org/x/sync v0.1.0 // indirect
 	golang.org/x/tools v0.5.0 // indirect
 	gopkg.in/warnings.v0 v0.1.2 // indirect
-	oras.land/oras-go/v2 v2.0.0-rc.6 // indirect
+	oras.land/oras-go/v2 v2.0.0 // indirect
 	sigs.k8s.io/yaml v1.3.0 // indirect
 )
 
 require (
-	github.com/cybercyst/go-cookiecutter v0.0.0-20230118180645-f8dd99a9bccb
+	github.com/cybercyst/go-cookiecutter v0.0.0-20230119141007-3830ab321a66
 	github.com/fsnotify/fsnotify v1.6.0 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
