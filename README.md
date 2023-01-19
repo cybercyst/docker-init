@@ -42,4 +42,4 @@ Currently supports
 
 ## Demo
 
-[![asciicast](https://asciinema.org/a/u5TJBtgVipKgvCRvgTfHDoW5U.svg)](https://asciinema.org/a/u5TJBtgVipKgvCRvgTfHDoW5U)
+[![asciicast](https://asciinema.org/a/KW5lOX439PdMP4qVYm02AgHP3.svg)](https://asciinema.org/a/KW5lOX439PdMP4qVYm02AgHP3)
