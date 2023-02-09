@@ -1,0 +1,13 @@
+title: Go Docker Bootstrap
+version: v0.0.1
+schema:
+  type: object
+  properties:
+    binary:
+      type: string
+    port:
+      type: integer
+  required:
+    - binary
+steps:
+  - source: ./templates

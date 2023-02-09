@@ -1,0 +1,11 @@
+title: Angular Docker Bootstrap
+version: v0.0.1
+schema:
+  type: object
+  properties:
+    project_name:
+      type: string
+  required:
+    - project_name
+steps:
+  - source: ./template

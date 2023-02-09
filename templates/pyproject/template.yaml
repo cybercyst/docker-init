@@ -1,0 +1,13 @@
+title: Pyproject.toml Docker Bootstrap
+version: v0.0.1
+schema:
+  type: object
+  properties:
+    app:
+      type: string
+    port:
+      type: integer
+  required:
+    - app
+steps:
+  - source: ./template
