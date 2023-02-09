@@ -7,6 +7,10 @@ schema:
       type: string
     port:
       type: integer
+    ignore_files:
+      type: array
+      items:
+        type: string
   required:
     - app
 steps:

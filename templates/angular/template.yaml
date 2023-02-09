@@ -5,6 +5,10 @@ schema:
   properties:
     project_name:
       type: string
+    ignore_files:
+      type: array
+      items:
+        type: string
   required:
     - project_name
 steps:
