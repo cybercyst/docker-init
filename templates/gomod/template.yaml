@@ -13,4 +13,4 @@ schema:
     - module
     - image
 steps:
-  - source: ./templates
+  - source: ./template
