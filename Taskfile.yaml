@@ -1,5 +1,10 @@
 version: 3
 
+vars:
+  BINARY: docker-init
+  INSTALL_PATH: $HOME/.docker-init
+  CLI_PLUGIN_PATH: $HOME/.docker/cli-plugins
+
 tasks:
   build:
     # deps:
@@ -9,14 +14,24 @@ tasks:
 
   test:
     cmds:
-      - go test -v -cover ./...
+      - go test -v ./... -cover
 
   install:
     deps:
       - build
     cmds:
-      - mkdir -p $HOME/.docker/cli-plugins
-      - ln -sf $PWD/docker-new $HOME/.docker/cli-plugins
+      # Install the templates
+      - mkdir -p {{.INSTALL_PATH}}
+      - ln -sf $PWD/templates {{.INSTALL_PATH}}/templates
+
+      # Install the CLI plugin
+      - mkdir -p {{.CLI_PLUGIN_PATH}}
+      - ln -sf $PWD/{{.BINARY}} {{.CLI_PLUGIN_PATH}}
+
+  uninstall:
+    cmds:
+      - rm -rf {{.INSTALL_PATH}}
+      - rm -rf {{.CLI_PLUGIN_PATH}}/{{.BINARY}}
 
   clean:
     cmds:

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"docker-new/cmd"
+	"docker-init/cmd"
 
 	"github.com/docker/cli/cli-plugins/manager"
 	"github.com/docker/cli/cli-plugins/plugin"

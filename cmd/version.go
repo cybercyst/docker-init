@@ -15,10 +15,10 @@ var (
 
 var versionCmd = &cobra.Command{
 	Use:   "version",
-	Short: "Get the current version of docker-new",
+	Short: "Get the current version of docker-init",
 	Run: func(cmd *cobra.Command, args []string) {
 		version := fmt.Sprintf(`
-docker-new: Bootstrap your project with Docker
+docker-init: Bootstrap your project with Docker
 
 Version: %s
 GoVersion: %s

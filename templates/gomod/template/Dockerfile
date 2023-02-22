@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-ARG IMAGE=golang:1.19-alpine
+ARG IMAGE=golang:{{ image_version }}-alpine
 
 FROM $IMAGE AS development
 
@@ -33,7 +33,7 @@ RUN CGO_ENABLED=0 GOOS=linux go build -o {{ binary }}
 FROM scratch AS production
 
 COPY --from=builder /app/{{ binary }} .
-{% if port %}
+{%- if port %}
 EXPOSE {{ port }}
-{% endif %}
+{%- endif %}
 ENTRYPOINT [ "/{{ binary }}" ]

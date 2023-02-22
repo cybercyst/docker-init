@@ -1,13 +1,13 @@
 package template
 
 import (
-	"docker-new/internal/types"
+	"docker-init/internal/types"
 	"fmt"
 	"os"
 	"path/filepath"
 
 	"github.com/bclicn/color"
-	"github.com/cybercyst/go-cookiecutter/pkg/cookiecutter"
+	"github.com/cybercyst/go-scaffold/pkg/scaffold"
 )
 
 func Generate(target types.Target) error {
@@ -16,7 +16,12 @@ func Generate(target types.Target) error {
 		return err
 	}
 
-	metadata, err := cookiecutter.Generate(templateDir, target.Input, target.Path)
+	template, err := scaffold.Download(templateDir)
+	if err != nil {
+		return err
+	}
+
+	metadata, err := scaffold.Generate(template, target.Input, target.Path)
 	if err != nil {
 		return err
 	}
@@ -33,7 +38,8 @@ func getTemplateDir(targetType types.TargetType) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	rootTemplateDir := filepath.Join(homeDir, ".docker-new", "templates")
+	// TODO: read from config value for this path
+	rootTemplateDir := filepath.Join(homeDir, ".docker-init", "templates")
 	templateDir := ""
 
 	switch targetType {

@@ -1,4 +1,4 @@
-# docker new
+# docker init
 
 I am a developer who wants to use Docker
 
@@ -39,7 +39,7 @@ Copying and pasting
 
 # Create your project, clone your project
 
-$ docker-new
+$ docker init
 
 🎉 SUCCESS We found a Angular project! 🎉
 

@@ -1,17 +1,18 @@
 package discover
 
 import (
-	"docker-new/internal/types"
+	"docker-init/internal/types"
 	"encoding/json"
 	"fmt"
-	"io/fs"
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/spf13/afero"
 )
 
-func getPackageJsonKey(targetPath string, key string) (interface{}, error) {
-	packageJsonBytes, err := os.ReadFile(filepath.Join(targetPath, "package.json"))
+func getPackageJsonKey(fs afero.Fs, targetPath string, key string) (interface{}, error) {
+	packageJsonBytes, err := afero.ReadFile(fs, filepath.Join(targetPath, "package.json"))
 	if err != nil {
 		return nil, err
 	}
@@ -45,12 +46,12 @@ func getTargetType(file string) types.TargetType {
 	return types.None
 }
 
-func getInput(targetType types.TargetType, targetPath string) (*map[string]interface{}, error) {
+func getInput(fs afero.Fs, targetType types.TargetType, targetPath string) (*map[string]interface{}, error) {
 	input := make(map[string]interface{})
 
 	switch targetType {
 	case types.Go:
-		gomodBytes, err := os.ReadFile(filepath.Join(targetPath, "go.mod"))
+		gomodBytes, err := afero.ReadFile(fs, filepath.Join(targetPath, "go.mod"))
 		if err != nil {
 			return nil, err
 		}
@@ -69,7 +70,7 @@ func getInput(targetType types.TargetType, targetPath string) (*map[string]inter
 
 		return &input, nil
 	case types.Angular:
-		projectName, err := getPackageJsonKey(targetPath, "name")
+		projectName, err := getPackageJsonKey(fs, targetPath, "name")
 		if err != nil {
 			return nil, err
 		}
@@ -77,7 +78,7 @@ func getInput(targetType types.TargetType, targetPath string) (*map[string]inter
 
 		return &input, nil
 	case types.React:
-		projectName, err := getPackageJsonKey(targetPath, "name")
+		projectName, err := getPackageJsonKey(fs, targetPath, "name")
 		if err != nil {
 			return nil, err
 		}
@@ -96,10 +97,10 @@ func getInput(targetType types.TargetType, targetPath string) (*map[string]inter
 	return nil, err
 }
 
-func ScanFolderForTargets(fsys fs.FS) ([]types.Target, error) {
+func ScanFolderForTargets(fs afero.Fs) ([]types.Target, error) {
 	targets := []types.Target{}
 
-	files, err := fs.ReadDir(fsys, ".")
+	files, err := afero.ReadDir(fs, ".")
 	for _, file := range files {
 		if file.IsDir() {
 			continue
@@ -115,7 +116,7 @@ func ScanFolderForTargets(fsys fs.FS) ([]types.Target, error) {
 			return nil, err
 		}
 		targetPathDir := filepath.Dir(targetPath)
-		input, err := getInput(targetType, targetPathDir)
+		input, err := getInput(fs, targetType, targetPathDir)
 		if err != nil {
 			return nil, err
 		}
@@ -128,4 +129,44 @@ func ScanFolderForTargets(fsys fs.FS) ([]types.Target, error) {
 	}
 
 	return targets, err
+}
+
+type Info struct {
+	BuildRuntime Runtime
+	Runtime      Runtime
+}
+
+type Detector struct {
+	Fs afero.Fs
+}
+
+func (d *Detector) Detect() (*Info, error) {
+	info, err := d.detectRuntime()
+	if err != nil {
+		return nil, err
+	}
+
+	return info, nil
+}
+
+func (d *Detector) detectRuntime() (*Info, error) {
+	switch {
+	case d.isGolang():
+		return d.getGolangInfo()
+	default:
+		return nil, nil
+	}
+}
+
+func (d *Detector) isGolang() bool {
+	_, err := d.Fs.Stat("go.mod")
+	if err != nil {
+		return false
+	}
+
+	return true
+}
+
+func (d *Detector) getGolangInfo() (*Info, error) {
+	return nil, nil
 }

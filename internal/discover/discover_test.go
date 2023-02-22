@@ -1,20 +1,25 @@
 package discover
 
 import (
-	"docker-new/internal/types"
+	"docker-init/internal/types"
 	"os"
+	"strings"
 	"testing"
-	"testing/fstest"
+
+	"github.com/spf13/afero"
 )
 
 func TestScanFolderForTargetsGo(t *testing.T) {
-	m := fstest.MapFS{
-		"go.mod": {},
-	}
+	fs := afero.NewMemMapFs()
+	afero.WriteFile(fs, "go.mod", []byte(strings.TrimSpace(`
+module go-test
 
-	got, err := ScanFolderForTargets(m)
+go 1.19
+`)), 0644)
+
+	got, err := ScanFolderForTargets(fs)
 	if err != nil {
-		t.Fatal("expected no error when detecting target of type Go")
+		t.Fatalf("expected no error when detecting target of type Go, got %s", err)
 	}
 
 	currDir, err := os.Getwd()
@@ -33,12 +38,11 @@ func TestScanFolderForTargetsGo(t *testing.T) {
 }
 
 func TestScanFolderNoTargetFound(t *testing.T) {
-	m := fstest.MapFS{
-		"a.txt": {Data: []byte("My amazing text file")},
-		"b.txt": {Data: []byte("Another life-changing file")},
-	}
+	fs := afero.NewMemMapFs()
+	afero.WriteFile(fs, "a.txt", []byte("My amazing text file"), 0644)
+	afero.WriteFile(fs, "b.txt", []byte("Another life-changing file"), 0644)
 
-	got, err := ScanFolderForTargets(m)
+	got, err := ScanFolderForTargets(fs)
 	if err != nil {
 		t.Fatal("expected no error when scanning folder with no targets")
 	}
