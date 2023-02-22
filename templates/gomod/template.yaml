@@ -3,15 +3,14 @@ version: v0.0.1
 schema:
   type: object
   properties:
-    binary:
+    module:
+      type: string
+    image:
       type: string
     port:
       type: integer
-    ignore_files:
-      type: array
-      items:
-        type: string
   required:
-    - binary
+    - module
+    - image
 steps:
   - source: ./templates

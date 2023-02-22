@@ -1,9 +1,9 @@
 services:
-    dev-backend:
-        build:
-            context: ./
-            target: development
+  dev-app:
+    build:
+      context: ./
+      target: development
 {%- if port %}
-        ports:
-            - {{ port }}:{{ port }}
+    ports:
+        - {{ port }}:{{ port }}
 {% endif %}

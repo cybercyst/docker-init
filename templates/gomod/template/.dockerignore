@@ -7,6 +7,6 @@
 # */*/temp*
 # temp?
 
-{%- for file in ignore_files %}
-{{ file }}
-{% endfor %}
+.dockerignore
+docker-compose.yaml
+Dockerfile
