@@ -3,6 +3,8 @@ services:
     build:
       context: ./
       target: development
+    volumes:
+      - .:/project
 {%- if port %}
     ports:
         - {{ port }}:{{ port }}
