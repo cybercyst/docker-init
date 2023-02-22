@@ -1,23 +1,62 @@
 package discover
 
 import (
+	"docker-init/internal/types"
+	"strings"
 	"testing"
 
 	"github.com/spf13/afero"
 	"gotest.tools/assert"
 )
 
-func TestShouldDetectModNameAndVersion(t *testing.T) {
+func TestDetectGolang119(t *testing.T) {
 	fs := afero.NewMemMapFs()
-	afero.WriteFile(fs, "go.mod", []byte("module go-test\n\ngo 1.19\n"), 0644)
+	afero.WriteFile(fs, "go.mod", []byte(strings.TrimSpace(`
+module go-test
 
-	info, err := NewGolangProject(fs)
-	if err != nil {
-		t.Fatalf("got unexpected error when parsing golang project: %s", err)
+go 1.19
+`)), 0644)
+
+	detector := &Detector{
+		Fs: fs,
 	}
 
-	assert.Equal(t, info.BuildRuntime.Type, Go)
-	assert.Equal(t, info.BuildRuntime.Version, "1.19")
-	assert.Equal(t, info.Runtime.Type, None)
-	assert.Equal(t, info.Runtime.Version, "")
+	got, err := detector.Detect()
+	assert.NilError(t, err)
+
+	want := &types.TemplateInfo{
+		Name:  "gomod",
+		Label: "Go",
+		Input: map[string]interface{}{
+			"module": "go-test",
+			"image":  "golang:1.19-alpine",
+		},
+	}
+	assert.DeepEqual(t, got, want)
+}
+
+func TestDetectGolang120(t *testing.T) {
+	fs := afero.NewMemMapFs()
+	afero.WriteFile(fs, "go.mod", []byte(strings.TrimSpace(`
+module go-test
+
+go 1.20
+`)), 0644)
+
+	detector := &Detector{
+		Fs: fs,
+	}
+
+	got, err := detector.Detect()
+	assert.NilError(t, err)
+
+	want := &types.TemplateInfo{
+		Name:  "gomod",
+		Label: "Go",
+		Input: map[string]interface{}{
+			"module": "go-test",
+			"image":  "golang:1.20-alpine",
+		},
+	}
+	assert.DeepEqual(t, got, want)
 }

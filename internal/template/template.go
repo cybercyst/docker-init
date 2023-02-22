@@ -10,8 +10,8 @@ import (
 	"github.com/cybercyst/go-scaffold/pkg/scaffold"
 )
 
-func Generate(target types.Target) error {
-	templateDir, err := getTemplateDir(target.TargetType)
+func Generate(info *types.TemplateInfo, outputPath string) error {
+	templateDir, err := getTemplateDir(info.Name)
 	if err != nil {
 		return err
 	}
@@ -21,7 +21,7 @@ func Generate(target types.Target) error {
 		return err
 	}
 
-	metadata, err := scaffold.Generate(template, target.Input, target.Path)
+	metadata, err := scaffold.Generate(template, &info.Input, outputPath)
 	if err != nil {
 		return err
 	}
@@ -33,30 +33,13 @@ func Generate(target types.Target) error {
 	return nil
 }
 
-func getTemplateDir(targetType types.TargetType) (string, error) {
+func getTemplateDir(templateName string) (string, error) {
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
 		return "", err
 	}
+
 	// TODO: read from config value for this path
 	rootTemplateDir := filepath.Join(homeDir, ".docker-init", "templates")
-	templateDir := ""
-
-	switch targetType {
-	case types.Go:
-		templateDir = "gomod"
-	case types.Angular:
-		templateDir = "angular"
-	case types.Python:
-		templateDir = "pyproject"
-	case types.React:
-		templateDir = "react"
-	}
-
-	if templateDir == "" {
-		err = fmt.Errorf("no generator found for target type %s", targetType.ToString())
-		return "", err
-	}
-
-	return filepath.Join(rootTemplateDir, templateDir), nil
+	return filepath.Join(rootTemplateDir, templateName), nil
 }
